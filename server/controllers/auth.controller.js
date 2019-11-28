@@ -1,47 +1,100 @@
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const UserModel = require('../models/user.model');
 
 const secretKey = 'MySecretKey' // dont store secret key inside code
+const salRound = 11;
 
 exports.login = (req, res, next) => {
-  let user = {
-    name: 'Shivam',
-    email: 'shivam@gmail.com',
-    password: 'shivam123'
+  let findQuery = {
+    email: req.body.email
   }
-  if(req.body.email == user.email && req.body.password == user.password){
-    // Generate Token
-    let token = jwt.sign(user, secretKey);
-    res
-    .header({ access_token: token, name: user.name, email: user.email })
-    .send({
-      success: true,
-      message: 'User Validated successfully',
-    });
-  } else {
-    res.status(401)
-    .send({
-      success: false,
-      message: 'Invalid Username or Password',
-    });
-  }
-  res.send('inside login controller');
+  UserModel.findOne(findQuery, (err, user) => {
+    if(err) throw err;
+
+    if(user){
+      bcrypt.compare(req.body.password, user.password, (err, success) => {
+        if(err) throw err;
+
+        if(success){
+          // Generate Token
+          let userPayload = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password
+          }
+          let token = jwt.sign(userPayload, secretKey);
+          res.status(200)
+          .header({ access_token: token, name: user.name, email: user.email })
+          .send({
+            success: true,
+            message: 'User Validated successfully',
+          });
+        } else {
+          res.status(401)
+          .send({
+            success: false,
+            message: 'Invalid Password',
+          });
+        }
+      });
+    } else {
+      res.status(401)
+      .send({
+        success: false,
+        message: 'Invalid Email',
+      });
+    }
+  }); // end user model
 }
 exports.signup = (req, res) => {
-  let user = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  }
+  // Check is email exist
+  UserModel.findOne({email: req.body.email}, (err, user) => {
+    if(user){
+      res.status(409)
+      .send({
+        success: false,
+        message: 'Email already exist',
+      });
+    } else {
+      // Encrypt Password
+      bcrypt.genSalt(salRound, (err, salt) => {
+        if(err) throw err;
 
-  // Generate Token
-  let token = jwt.sign(user, secretKey);
-  res.status(200)
-  .header({ access_token: token, name: user.name, email: user.email })
-  .send({
-    success: true,
-    message: 'User Registered successfully',
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
+          if(err) throw err;
+
+          let createQuery = {
+            name: req.body.name,
+            email: req.body.email,
+            password: hash
+          }
+          // Store user info in database
+          UserModel.create(createQuery, (err, result) => {
+            if(err) throw err;
+
+            // Generate Token
+            let userPayload = {
+              name: req.body.name,
+              email: req.body.email,
+              password: req.body.password
+            }
+            let token = jwt.sign(userPayload, secretKey);
+            let headerPayload = {
+              name: req.body.name,
+              email: req.body.email,
+              access_token: token
+            }
+            res.status(200)
+            .header(headerPayload)
+            .send({
+              success: true,
+              message: 'User Registered successfully',
+            });
+          }); // user model
+        }); // end hash
+      });
+    }
   });
-
-
 }
