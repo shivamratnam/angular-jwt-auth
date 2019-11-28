@@ -20,7 +20,7 @@
           <!-- Email -->
           <div class="row">
             <div class="col col-12">
-              <input type="text" class="w-100 p-2" name="email" formControlName="email" placeholder="Email" required>
+              <input type="text" class="w-100 p-2 mt-2" name="email" formControlName="email" placeholder="Email" required>
             </div>
             <div class="col col-12 text-left text-danger"
             *ngIf="signupForm.controls.email.touched &&
@@ -40,7 +40,7 @@
             <!-- Password -->
             <div class="row">
               <div class="col col-12">
-                <input type="password" class="w-100 p-2" name="password" formControlName="password" placeholder="Password" required>
+                <input type="password" class="w-100 p-2 mt-2" name="password" formControlName="password" placeholder="Password" required>
               </div>
               <div class="col col-12 text-left text-danger"
               *ngIf="signupForm.controls.passwords.controls.password.touched &&
@@ -58,7 +58,7 @@
             <!-- Confirm Password -->
             <div class="row">
               <div class="col col-12">
-                <input type="password" class="w-100 p-2" name="confpassword" formControlName="confpassword" placeholder="Confirm Password" required>
+                <input type="password" class="w-100 p-2 mt-2" name="confpassword" formControlName="confpassword" placeholder="Confirm Password" required>
               </div>
               <div class="col col-12 text-left text-danger"
               *ngIf="signupForm.controls.passwords.controls.confpassword.touched &&

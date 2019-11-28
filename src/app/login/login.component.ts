@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +11,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class LoginComponent implements OnInit {
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -31,7 +35,14 @@ export class LoginComponent implements OnInit {
    * This function is used to login the user
    */
   public login(){
-    console.log('inside login()');
-    console.log(this.loginForm);
+    let email = this.loginForm.controls.email.value;
+    let password = this.loginForm.controls.password.value;
+    // Validate user data
+    this.userService.validateUser(email, password).subscribe( result => {
+      if(result){
+        this.router.navigate(['/dashboard']);
+      }
+    },
+    (err) => console.log(err));
   }
 }

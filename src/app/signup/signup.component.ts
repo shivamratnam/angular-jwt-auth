@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -9,7 +11,9 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 export class SignupComponent implements OnInit {
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -39,9 +43,17 @@ export class SignupComponent implements OnInit {
   }
 
   public signup(){
-    console.log(this.signupForm);
     if(this.signupForm.status == 'VALID'){
-
+      let name = this.signupForm.controls.name.value;
+      let email = this.signupForm.controls.email.value;
+      let password = this.signupForm.controls.passwords.value.password;
+      // Submit user data
+      this.userService.createUser(name, email, password).subscribe( result => {
+        if(result){
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      (err) => console.log(err));
     }
   }
 
