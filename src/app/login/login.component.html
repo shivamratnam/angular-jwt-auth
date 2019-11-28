@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="card mx-auto mt-3" style="max-width: 500px;">
+    <!-- Header -->
+    <h2 class="text-center mt-2" style="font-family: 'Times New Roman', Times, serif; color: maroon;">Sign in</h2>
+    <!-- Body -->
+    <div class="card-body text-center">
+      <form [formGroup]="loginForm" (submit)="login()">
+        <!-- Email -->
+        <div class="row">
+          <div class="col col-12">
+            <input type="text" class="w-100 p-2" name="email" id="user" formControlName="email" placeholder="Email">
+          </div>
+          <div
+          class="col col-12 text-left text-danger"
+          *ngIf="loginForm.controls.email.touched &&
+          loginForm.controls.email.errors &&
+          loginForm.controls.email.errors.required">
+            Email is required
+          </div>
+          <div class="col col-12 text-left text-danger"
+          *ngIf="loginForm.controls.email.touched &&
+          loginForm.controls.email.errors &&
+          loginForm.controls.email.errors.email">
+            Enter valid email (eg. user@gmail.com)
+          </div>
+        </div>
+        <!-- Password -->
+        <div class="row">
+          <div class="col col-12">
+            <input type="password" class="w-100 p-2 mt-2" name="password" formControlName="password" placeholder="Password">
+          </div>
+          <div class="col col-12 text-left text-danger"
+          *ngIf="loginForm.controls.password.touched &&
+          loginForm.controls.password.errors &&
+          loginForm.controls.password.errors.required">
+            Password is required
+          </div>
+          <div class="col col-12 text-left text-danger"
+          *ngIf="loginForm.controls.password.touched &&
+          loginForm.controls.password.errors &&
+          loginForm.controls.password.errors.minlength">
+            Password must be atleast 4 characters
+          </div>
+        </div>
+        <!-- Login Button -->
+        <div class="row">
+          <button type="submit" class="btn btn-success mx-auto w-50 p-3 mt-3">Login</button>
+        </div>
+      </form>
+    </div>
+    <!-- Footer -->
+    <div class="card-footer text-center">
+        New user? <a [routerLink]="['/signup']">Sign in</a>
+    </div>
+  </div>
+</div>

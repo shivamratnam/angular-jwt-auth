@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="card mx-auto mt-3" style="max-width: 500px;">
+      <!-- Header -->
+      <h2 class="text-center mt-2" style="font-family: 'Times New Roman', Times, serif; color: maroon;">Sign up</h2>
+      <!-- Body -->
+      <div class="card-body text-center">
+        <form [formGroup]="signupForm" (submit)="signup()">
+          <!-- Email -->
+          <div class="row">
+            <div class="col col-12">
+              <input type="text" class="w-100 p-2" name="fullname" formControlName="name" placeholder="Full Name" required>
+            </div>
+            <div class="col col-12 text-left text-danger"
+            *ngIf="signupForm.controls.name.touched &&
+            signupForm.controls.name.errors &&
+            signupForm.controls.name.errors.required">
+              Name is required
+            </div>
+          </div>
+          <!-- Email -->
+          <div class="row">
+            <div class="col col-12">
+              <input type="text" class="w-100 p-2" name="email" formControlName="email" placeholder="Email" required>
+            </div>
+            <div class="col col-12 text-left text-danger"
+            *ngIf="signupForm.controls.email.touched &&
+            signupForm.controls.email.errors &&
+            signupForm.controls.email.errors.required">
+              Email is required
+            </div>
+            <div class="col col-12 text-left text-danger"
+            *ngIf="signupForm.controls.email.touched &&
+            signupForm.controls.email.errors &&
+            signupForm.controls.email.errors.email">
+              Enter valid email (eg. user@gmail.com)
+            </div>
+          </div>
+          <!-- Passwords Form Group -->
+          <div formGroupName="passwords">
+            <!-- Password -->
+            <div class="row">
+              <div class="col col-12">
+                <input type="password" class="w-100 p-2" name="password" formControlName="password" placeholder="Password" required>
+              </div>
+              <div class="col col-12 text-left text-danger"
+              *ngIf="signupForm.controls.passwords.controls.password.touched &&
+              signupForm.controls.passwords.controls.password.errors &&
+              signupForm.controls.passwords.controls.password.errors.required">
+                Password is required
+              </div>
+              <div class="col col-12 text-left text-danger"
+              *ngIf="signupForm.controls.passwords.controls.password.touched &&
+              signupForm.controls.passwords.controls.password.errors &&
+              signupForm.controls.passwords.controls.password.errors.minlength">
+                Password must be atleast 4 characters
+              </div>
+            </div>
+            <!-- Confirm Password -->
+            <div class="row">
+              <div class="col col-12">
+                <input type="password" class="w-100 p-2" name="confpassword" formControlName="confpassword" placeholder="Confirm Password" required>
+              </div>
+              <div class="col col-12 text-left text-danger"
+              *ngIf="signupForm.controls.passwords.controls.confpassword.touched &&
+              signupForm.controls.passwords.errors &&
+              signupForm.controls.passwords.errors.notmatched">
+                Password is not matched
+              </div>
+            </div>
+          </div>
+          <!-- Login Button -->
+          <div class="row">
+            <button type="submit" class="btn btn-success mx-auto w-50 p-3 mt-3">Register</button>
+          </div>
+        </form>
+      </div>
+      <!-- Footer -->
+      <div class="card-footer text-center">
+          Existing user? <a [routerLink]="['/login']">Login</a>
+      </div>
+    </div>
+  </div>
