@@ -4,6 +4,9 @@
       <h2 class="text-center mt-2" style="font-family: 'Times New Roman', Times, serif; color: maroon;">Sign up</h2>
       <!-- Body -->
       <div class="card-body text-center">
+        <div class="alert alert-danger" role="alert" *ngIf="signupErrorMsg">
+            {{signupErrorMsg}}
+        </div>
         <form [formGroup]="signupForm" (submit)="signup()">
           <!-- Email -->
           <div class="row">

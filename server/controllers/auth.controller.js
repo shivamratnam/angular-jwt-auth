@@ -20,9 +20,9 @@ exports.login = (req, res, next) => {
         if(success){
           // Generate Token
           let userPayload = {
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
+            name: user.name,
+            email: user.email,
+            password: user.password
           }
           let token = jwt.sign(userPayload, secretKey);
           res.status(200)
@@ -78,7 +78,7 @@ exports.signup = (req, res) => {
             let userPayload = {
               name: req.body.name,
               email: req.body.email,
-              password: req.body.password
+              password: hash
             }
             let token = jwt.sign(userPayload, secretKey);
             let headerPayload = {
@@ -97,4 +97,11 @@ exports.signup = (req, res) => {
       });
     }
   });
+}
+exports.validateToken = (req, res) => {
+  if(req.user){
+    res.send({success: true, message: 'User validated successfully'});
+  } else {
+    res.send({success: false, message: 'Invalid Token'});
+  }
 }

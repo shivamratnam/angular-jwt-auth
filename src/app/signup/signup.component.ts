@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
+  signupErrorMsg: string = null;
 
   constructor(
     private fb: FormBuilder,
@@ -17,6 +18,19 @@ export class SignupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    let token = localStorage.getItem('access_token');
+    if(token){
+      this.userService.validateToken(token).subscribe( result => {
+        if(result && result.success){
+          this.userService.setLoginStatus(true);
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.userService.setLoginStatus(false);
+      });
+    }
   }
 
   /* Signup Form Instance */
@@ -53,7 +67,9 @@ export class SignupComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         }
       },
-      (err) => console.log(err));
+      (errObj) => {
+        this.signupErrorMsg = errObj.error.message;
+      });
     }
   }
 

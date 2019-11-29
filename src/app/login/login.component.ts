@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  loginErrorMsg: string = null;
 
   constructor(
     private fb: FormBuilder,
@@ -17,6 +18,19 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    let token = localStorage.getItem('access_token');
+    if(token){
+      this.userService.validateToken(token).subscribe( result => {
+        if(result && result.success){
+          this.userService.setLoginStatus(true);
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.userService.setLoginStatus(false);
+      });
+    }
   }
 
   /* Login Form Instance */
@@ -40,9 +54,12 @@ export class LoginComponent implements OnInit {
     // Validate user data
     this.userService.validateUser(email, password).subscribe( result => {
       if(result){
+        this.userService.setLoginStatus(true);
         this.router.navigate(['/dashboard']);
       }
     },
-    (err) => console.log(err));
+    (errObj) => {
+      this.loginErrorMsg = errObj.error.message;
+    });
   }
 }

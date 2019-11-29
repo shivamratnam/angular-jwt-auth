@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  loginStatus = new BehaviorSubject(false);
 
   constructor(
     private http: HttpClient
   ) { }
 
-  /* This function is used to validate user and login */
+  /* This function is used to validate user and log in */
   public validateUser(email: string, password: string): Observable<any> {
     let url = this.getBaseURL() + '/user/' + 'login';
     let body = {
@@ -58,11 +59,29 @@ export class UserService {
       })
     );
   }
-  public isLoggedIn(): boolean {
-    return true;
+  /* This function is used to validate user access_token */
+  public validateToken(token: string): Observable<any>{
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'access_token': token
+      })
+    }
+    let url = this.getBaseURL() + '/user/' + 'token';
+    let body = null;
+    return this.http.post(url, body, httpOptions);
   }
 
   public getBaseURL(){
     return 'http://localhost:4200';
   }
+
+  /* This function is used to track the user login status */
+  public getLoginStatus(): Observable<boolean> {
+    return this.loginStatus.asObservable();
+  }
+  public setLoginStatus(status: boolean): void{
+    this.loginStatus.next(status);
+  }
+
 }
